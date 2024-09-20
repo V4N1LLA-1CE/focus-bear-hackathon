@@ -1,11 +1,14 @@
-import { Stack } from "expo-router";
+// _layout.tsx
+import { Stack } from 'expo-router';
 
 export default function RootLayout() {
   return (
     <Stack>
-      <Stack.Screen name="index" options={{ title: "Landing Page" }} />
-      <Stack.Screen name="home" options={{ title: "Home Page" }} />
-      <Stack.Screen name="dashboard" options={{ title: "Dashboard" }} />
+      {/* Public routes */}
+      <Stack.Screen name="(public)" options={{ headerShown: false }} />
+      
+      {/* Private routes */}
+      <Stack.Screen name="(private)" options={{ headerShown: false }} />
     </Stack>
   );
 }
