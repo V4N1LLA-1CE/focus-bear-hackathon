@@ -35,10 +35,10 @@ model Friendship {
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
 
-  // This field represents all friendships that a user has initiated (i.e., the user is the one sending the friendship request
+  // This field represents all friendships that a user has initiated (i.e., the user is the one sending the friendship request)
   user1 User @relation("FriendshipsSent", fields: [user1Id], references: [id])
 
-  // This field represents all friendships where the user is the recipient (i.e., the user has received the friendship request from someone else
+  // This field represents all friendships where the user is the recipient (i.e., the user has received the friendship request from someone else)
   user2 User @relation("FriendshipsReceived", fields: [user2Id], references: [id])
 }
 
