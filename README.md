@@ -3,5 +3,5 @@ Repository for focus-bear hackathon challenge
 
 ## Team - Red Bull Coding
 ### Members:
-- Paarth Sharma
-- Austin Sofaer
+- Paarth Sharma (Frontend)
+- Austin Sofaer (Backend)
