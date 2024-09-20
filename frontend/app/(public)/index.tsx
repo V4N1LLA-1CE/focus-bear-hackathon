@@ -1,13 +1,13 @@
 import { View, Text, Button, StyleSheet } from 'react-native';
-import { useRouter } from "expo-router";
+import { useRouter } from 'expo-router';
 
 export default function LandingPage() {
   const router = useRouter();
-  
+
   return (
     <View style={styles.container}>
       <Text>Welcome to the App!</Text>
-      <Button title="Go to Home" onPress={() => router.push('/home')} />
+      <Button title="Get Started -->" onPress={() => router.push('/home')} />
     </View>
   );
 }
