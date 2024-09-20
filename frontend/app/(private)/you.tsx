@@ -4,14 +4,14 @@ import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import the FontAwesome icon library
 
-export default function DashboardPage() {
+export default function YouPage() {
   const router = useRouter();
   const navigation = useNavigation();
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true, // Show header
-      headerTitle: 'My Dashboard', // Set title to "Dashboard"
+      headerTitle: 'Your Profile',
       headerTransparent: true, // Make the header translucent
       headerStyle: {
         backgroundColor: 'rgba(0, 0, 0, 0.3)', // Transparent effect for the navbar
@@ -34,7 +34,7 @@ export default function DashboardPage() {
       style={styles.background}
     >
       <View style={styles.overlay}>
-        <Text style={styles.welcomeText}>Welcome to your Dashboard!</Text>
+        <Text style={styles.welcomeText}>Your Profile</Text>
       </View>
     </ImageBackground>
   );
