@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -15,24 +19,51 @@ export class UsersService {
 
   async findAll(role?: 'USER' | 'ADMIN') {
     // Check if role is passed
-    if (role) {
-      return this.databaseService.user.findMany({
-        where: {
-          role,
+    return this.databaseService.user.findMany({
+      include: {
+        friendshipsSent: {
+          include: {
+            user2: true, // Make sure you're including related fields
+          },
         },
-      });
-    }
-
-    // Return all if no role passed in
-    return this.databaseService.user.findMany();
+        friendshipsReceived: {
+          include: {
+            user1: true, // Include related fields for received friendships
+          },
+        },
+      },
+      where: role ? { role } : undefined, // Only filter by role if provided
+    });
   }
 
   async findOne(id: number) {
-    return this.databaseService.user.findUnique({
-      where: {
-        id,
-      },
-    });
+    try {
+      const user = await this.databaseService.user.findUnique({
+        include: {
+          friendshipsSent: {
+            include: {
+              user2: true, // Make sure you're including related fields
+            },
+          },
+          friendshipsReceived: {
+            include: {
+              user1: true, // Include related fields for received friendships
+            },
+          },
+        },
+        where: {
+          id,
+        },
+      });
+
+      if (!user) {
+        throw new NotFoundException('Error retrieving user.');
+      }
+
+      return user;
+    } catch (err) {
+      throw new InternalServerErrorException('Error retrieving user.');
+    }
   }
 
   async update(id: number, updateUserDto: Prisma.UserUpdateInput) {
