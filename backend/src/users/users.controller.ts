@@ -11,7 +11,7 @@ import {
 import { UsersService } from './users.service';
 import { Prisma } from '@prisma/client';
 
-@Controller('users')
+@Controller('api/v1/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
