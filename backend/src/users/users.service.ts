@@ -82,4 +82,12 @@ export class UsersService {
       },
     });
   }
+
+  async findByUsername(username: string) {
+    return this.databaseService.user.findUnique({
+      where: {
+        username,
+      },
+    });
+  }
 }

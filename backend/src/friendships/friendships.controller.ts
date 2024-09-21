@@ -7,10 +7,13 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { FriendshipsService } from './friendships.service';
 import { FriendshipStatus } from '@prisma/client';
+import { AuthGuard } from 'src/auth/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('api/v1/friendships')
 export class FriendshipsController {
   constructor(private readonly friendshipsService: FriendshipsService) {}
