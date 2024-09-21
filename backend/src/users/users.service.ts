@@ -12,8 +12,14 @@ export class UsersService {
   constructor(private readonly databaseService: DatabaseService) {}
 
   async create(createUserDto: Prisma.UserCreateInput) {
+    // Generate a random dailyStats value between 0 and 365
+    const randomDailyStats = Math.floor(Math.random() * 366);
+
     return this.databaseService.user.create({
-      data: createUserDto,
+      data: {
+        ...createUserDto,
+        dailyStats: randomDailyStats, // Set the generated random value
+      },
     });
   }
 
