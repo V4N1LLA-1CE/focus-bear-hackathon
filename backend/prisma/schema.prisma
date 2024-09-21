@@ -3,7 +3,6 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,15 +15,40 @@ datasource db {
 model User {
   id        Int      @id @default(autoincrement())
   name      String
-  username  String   @db.VarChar(255)
+  username  String   @unique @db.VarChar(255)
   password  String
   email     String   @unique @db.VarChar(255)
   role      Role
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Define separate relations for sent and received friendships
+  friendshipsSent     Friendship[] @relation("FriendshipsSent")
+  friendshipsReceived Friendship[] @relation("FriendshipsReceived")
+}
+
+model Friendship {
+  id        Int              @id @default(autoincrement())
+  user1Id   Int
+  user2Id   Int
+  status    FriendshipStatus @default(PENDING)
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  // This field represents all friendships that a user has initiated (i.e., the user is the one sending the friendship request)
+  user1 User @relation("FriendshipsSent", fields: [user1Id], references: [id])
+
+  // This field represents all friendships where the user is the recipient (i.e., the user has received the friendship request from someone else)
+  user2 User @relation("FriendshipsReceived", fields: [user2Id], references: [id])
 }
 
 enum Role {
   ADMIN
   USER
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
