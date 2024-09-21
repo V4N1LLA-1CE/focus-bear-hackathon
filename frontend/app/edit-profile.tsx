@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 
 export default function EditProfilePage() {
   const router = useRouter();
+  const navigation = useNavigation();
 
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'Edit Profile',
+      headerTransparent: false,
+      headerBackTitle: 'Your Profile', // The back button will show 'Your Profile' in the navbar
+      headerTintColor: '#000',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 24,
+      },
+    });
+  }, [navigation]);
+  
   // Sample state to hold form data
   const [userData, setUserData] = useState({
     name: 'John Doe',
