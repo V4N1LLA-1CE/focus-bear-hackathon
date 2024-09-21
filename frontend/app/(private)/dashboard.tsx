@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,27 +9,14 @@ import {
 import { useRouter } from "expo-router";
 import { useNavigation } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LOCALHOST } from "../constants";
 
 export default function DashboardPage() {
   const router = useRouter();
   const navigation = useNavigation();
 
-  const [friends, setFriends] = useState([
-    { id: 1, name: "John Doe", score: 150 },
-    { id: 2, name: "Jane Smith", score: 200 },
-    { id: 3, name: "Robert Johnson", score: 120 },
-    { id: 4, name: "Emily Davis", score: 180 },
-    { id: 5, name: "Usain Bolt", score: 300 },
-    { id: 6, name: "Lionel Messi", score: 250 },
-    { id: 7, name: "Serena Williams", score: 220 },
-    { id: 8, name: "LeBron James", score: 170 },
-    { id: 9, name: "Trent Boult", score: 121 },
-    { id: 10, name: "CR7", score: 240 },
-    { id: 11, name: "Novak Djokovic", score: 320 },
-    { id: 12, name: "MJ", score: 340 },
-    { id: 13, name: "Venus Williams", score: 120 },
-    { id: 14, name: "Virat Kohli", score: 370 },
-  ]);
+  const [users, setUsers] = useState([]);
 
   const [showRequests, setShowRequests] = useState(false);
   const [friendRequests, setFriendRequests] = useState([
@@ -79,9 +66,38 @@ export default function DashboardPage() {
     });
   }, [navigation, showRequests, friendRequests]);
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const authToken = await getAuthToken(); // Implement your method to get the auth token
+        const response = await fetch(
+          "http://" + LOCALHOST + ":3000/api/v1/users",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`, // Include your auth token in the header
+            },
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch users");
+        }
+
+        const data = await response.json();
+        setUsers(data); // Adjust according to your API response structure
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleAcceptRequest = (requestId) => {
     const acceptedRequest = friendRequests.find((req) => req.id === requestId);
-    setFriends((prevFriends) => [...prevFriends, acceptedRequest]);
+    setUsers((prevFriends) => [...prevFriends, acceptedRequest]);
     setFriendRequests((prevRequests) =>
       prevRequests.filter((req) => req.id !== requestId),
     );
@@ -96,8 +112,8 @@ export default function DashboardPage() {
   const renderLeaderboardCard = ({ item, index }) => (
     <View style={styles.leaderboardCard}>
       <Text style={styles.leaderboardRank}>{index + 1}</Text>
-      <Text style={styles.leaderboardName}>{item.name}</Text>
-      <Text style={styles.leaderboardScore}>{item.score} pts</Text>
+      <Text style={styles.leaderboardName}>{item.username}</Text>
+      <Text style={styles.leaderboardScore}>{item.dailyStats} pts</Text>
     </View>
   );
 
@@ -106,7 +122,7 @@ export default function DashboardPage() {
       <View style={styles.overlay}>
         <Text style={styles.leaderboardTitle}>Global Leaderboard</Text>
         <FlatList
-          data={friends.sort((a, b) => b.score - a.score)}
+          data={users.sort((a, b) => b.dailyStats - a.dailyStats)}
           renderItem={renderLeaderboardCard}
           keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.leaderboardList}
@@ -150,7 +166,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fefefe",
-    justifyContent: "center",
+    justifyContent: "start",
     alignItems: "center",
     paddingTop: 110,
     paddingBottom: 100,
@@ -161,13 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
   },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#000",
-    textAlign: "center",
-    marginBottom: 20,
-  },
+
   headerButton: {
     marginRight: 15,
   },
@@ -255,6 +265,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    marginTop: 0,
     color: "#fc8a00",
   },
   leaderboardCard: {
@@ -297,3 +308,13 @@ const styles = StyleSheet.create({
     alignItems: "center", // Center content horizontally
   },
 });
+
+const getAuthToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem("authToken");
+    return token; // Will return null if the token is not found
+  } catch (error) {
+    console.error("Error retrieving auth token:", error);
+    return null; // Return null in case of an error
+  }
+};
