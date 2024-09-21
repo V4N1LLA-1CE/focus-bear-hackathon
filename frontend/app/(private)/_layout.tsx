@@ -1,6 +1,8 @@
 import { Stack } from 'expo-router';
 import { Tabs } from 'expo-router';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 export default function PrivateLayout() {
   return (
@@ -9,7 +11,7 @@ export default function PrivateLayout() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'dashboard') {
-            iconName = 'dashboard';
+            iconName = 'home';
           } else if (route.name === 'friends') {
             iconName = 'users';
           } else if (route.name === 'you') {

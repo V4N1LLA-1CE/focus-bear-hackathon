@@ -21,11 +21,7 @@ export default function FriendsPage() {
     { id: 2, name: 'Novak Djokovic' },
     { id: 3, name: 'Virat Kohli' },
     { id: 4, name: 'Leo Messi' },
-    // { id: 5, name: 'Leo Messi' },
-    // { id: 6, name: 'Leo Messi' },
-    // { id: 7, name: 'Leo Messi' },
-    // { id: 8, name: 'Leo Messi' },
-    // { id: 9, name: 'Leo Messi' },
+    { id: 5, name: 'Roger Federer' },
   ]);
 
   useLayoutEffect(() => {
@@ -43,7 +39,6 @@ export default function FriendsPage() {
       },
       headerRight: () => (
         <View style={styles.headerIconWrapper}>
-          {/* Bell Icon */}
           <TouchableOpacity onPress={() => setShowRequests(!showRequests)} style={styles.headerButton}>
             <Icon name="bell" size={24} color="rgba(255, 172, 28, 0.8)" />
             {friendRequests.length > 0 && (
@@ -53,7 +48,6 @@ export default function FriendsPage() {
             )}
           </TouchableOpacity>
 
-          {/* Plus Icon for Add Friends */}
           <TouchableOpacity onPress={() => router.push('/add-friend')} style={styles.headerButton}>
             <Icon name="plus" size={24} color="rgba(255, 172, 28, 0.8)" />
           </TouchableOpacity>
@@ -76,14 +70,6 @@ export default function FriendsPage() {
     );
   };
 
-  const renderFriendCard = ({ item }) => (
-    <View style={styles.cardContainer}>
-      <View style={styles.card}>
-        <Text style={styles.friendName}>{item.name}</Text>
-      </View>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
       {friends.length === 0 ? (
@@ -91,7 +77,13 @@ export default function FriendsPage() {
       ) : (
         <FlatList
           data={friends}
-          renderItem={renderFriendCard}
+          renderItem={({ item }) => (
+            <View style={styles.cardContainer}>
+              <View style={styles.card}>
+                <Text style={styles.friendName}>{item.name}</Text>
+              </View>
+            </View>
+          )}
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           contentContainerStyle={styles.friendList}
@@ -101,36 +93,37 @@ export default function FriendsPage() {
       {/* Dropdown for Friend Requests */}
       {showRequests && (
         <View style={styles.dropdown}>
-          <Text style={styles.dropdownHeader}>Incoming Friend Requests</Text>
-          {friendRequests.length === 0 ? (
-            <Text style={styles.dropdownText}>No Friend Requests</Text>
-          ) : (
-            friendRequests.map((request) => (
-              <View key={request.id} style={styles.requestContainer}>
-                <Text style={styles.dropdownText}>{request.name}</Text>
-                <View style={styles.requestButtons}>
-                  <TouchableOpacity
-                    style={styles.acceptButton}
-                    onPress={() => handleAcceptRequest(request.id)}
-                  >
-                    <Text style={styles.buttonText}>Accept</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.rejectButton}
-                    onPress={() => handleRejectRequest(request.id)}
-                  >
-                    <Text style={styles.buttonText}>Reject</Text>
-                  </TouchableOpacity>
-                </View>
+          <Text style={styles.dropdownHeader}>Friend Requests</Text>
+          {friendRequests.slice(0, 4).map((request) => (
+            <View key={request.id} style={styles.requestContainer}>
+              <Text style={styles.dropdownText}>{request.name}</Text>
+              <View style={styles.requestButtons}>
+                <TouchableOpacity
+                  style={styles.acceptButton}
+                  onPress={() => handleAcceptRequest(request.id)}
+                >
+                  <Text style={styles.buttonText}>Accept</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.rejectButton}
+                  onPress={() => handleRejectRequest(request.id)}
+                >
+                  <Text style={styles.buttonText}>Reject</Text>
+                </TouchableOpacity>
               </View>
-            ))
+            </View>
+          ))}
+          
+          {friendRequests.length > 4 && (
+            <TouchableOpacity onPress={() => router.push('/friend-requests')}>
+              <Text style={styles.showMoreLink}>Show More</Text>
+            </TouchableOpacity>
           )}
         </View>
       )}
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -248,4 +241,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
   },
-});
+  showMoreButton: {
+    marginTop: 10,
+    padding: 5,
+    backgroundColor: '#e9902c',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  showMoreText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  showMoreLink: {
+    color: '#e9902c', // Orange color for the link
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginTop: 5,
+    marginBottom: 5,
+    textDecorationLine: 'underline',
+},});
