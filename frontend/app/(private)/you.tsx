@@ -8,15 +8,7 @@ import { LOCALHOST } from "../constants";
 export default function YouPage() {
   const router = useRouter();
   const navigation = useNavigation();
-  const [user, setUser] = useState({
-    id: 1,
-    name: "John Doe",
-    username: "johndoe123",
-    email: "john.doe@example.com",
-    role: "User",
-    createdAt: "2022-01-01T00:00:00.000Z",
-    streakLength: 14,
-  });
+  const [user, setUser] = useState({});
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -207,6 +199,7 @@ const fetchAndCreateUser = async () => {
     const currentUserRole = userData.role;
     const { createdAt } = userData;
     const { updatedAt } = userData;
+    const { dailyStats } = userData;
 
     // create user object
     const user = {
@@ -216,7 +209,7 @@ const fetchAndCreateUser = async () => {
       email: currentUserEmail,
       role: currentUserRole,
       createdAt,
-      streakLength: 14,
+      streakLength: dailyStats,
     };
 
     return user;
