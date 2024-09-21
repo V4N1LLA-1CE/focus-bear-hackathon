@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -11,6 +11,21 @@ export default function FriendRequestsPage() {
     { id: 4, name: 'Leo Messi' },
     { id: 5, name: 'Roger Federer' },
   ]);
+
+  // Set up the navigation options using useLayoutEffect
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerShown: true,
+      headerTitle: 'Friend Requests',
+      headerTransparent: false,
+      headerBackTitle: 'Friends', // Set the back button title to "Friends"
+      headerTintColor: '#000',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontSize: 24,
+      },
+    });
+  }, [navigation]);
 
   const handleAcceptRequest = (requestId) => {
     setFriendRequests((prevRequests) =>
