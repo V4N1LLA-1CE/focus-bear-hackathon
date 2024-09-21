@@ -33,6 +33,6 @@ Full-stack mobile application built for a hackathon that is hosted by Focus-Bear
 - User authentication and authorization with JWT
 - Friends system with requests and notifications
 
-## Getting Started
+## Demo
 
 Demo coming soon!
