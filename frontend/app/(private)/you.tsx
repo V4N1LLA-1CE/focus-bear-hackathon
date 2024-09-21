@@ -1,5 +1,5 @@
 import React, { useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Import the FontAwesome icon library
@@ -16,40 +16,37 @@ export default function YouPage() {
       headerStyle: {
         backgroundColor: 'rgba(0, 0, 0, 0.3)', // Transparent effect for the navbar
       },
-      headerTintColor: '#fff', // Text color in the header
+      headerTintColor: '#000', // Text color in the header
       headerTitleStyle: {
         fontWeight: 'bold',
+        fontSize: 24, // Set a larger font size for the header title
       },
       headerRight: () => (
         <TouchableOpacity onPress={() => router.replace('/')} style={styles.headerButton}>
-          <Icon name="sign-out" size={24} color="#fff" />
+          <Icon name="sign-out" size={24} color="#000" />
         </TouchableOpacity>
       ),
     });
   }, [navigation, router]);
 
   return (
-    <ImageBackground
-      source={{ uri: 'https://images.unsplash.com/photo-1583883175425-46dee3845e7f?q=80&w=800&auto=format&fit=crop' }}
-      style={styles.background}
-    >
+    <View style={styles.container}>
       <View style={styles.overlay}>
         <Text style={styles.welcomeText}>Your Profile</Text>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
+  container: {
     flex: 1,
+    backgroundColor: '#fefefe', // Solid white background
     justifyContent: 'center',
     alignItems: 'center',
   },
   overlay: {
-    flex: 1,
     width: '100%',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Dark translucent overlay
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
@@ -57,7 +54,7 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#000', // Changed text color to black for visibility on white background
     textAlign: 'center',
   },
   headerButton: {

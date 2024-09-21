@@ -18,9 +18,9 @@ export default function PrivateLayout() {
           return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: '#fefefe',
-        tabBarInactiveTintColor: 'black',
+        tabBarInactiveTintColor: '#000000',
         tabBarStyle: {
-          backgroundColor: 'rgba(255, 255, 255, 0.1)', // Translucent white background
+          backgroundColor: '#fc8a00', // Translucent white background
           borderTopColor: 'rgba(255, 255, 255, 0.2)', // Slight border effect
           paddingBottom: 20, // Padding for the bottom icons
           paddingTop: 10, // Padding for the top icons
