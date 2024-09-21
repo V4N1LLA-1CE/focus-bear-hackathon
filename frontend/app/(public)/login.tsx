@@ -17,7 +17,7 @@ export default function LoginPage() {
 
   return (
     <ImageBackground
-      source={{ uri: 'https://images.unsplash.com/photo-1533840418139-424cfa449ad1?fit=crop&w=800&q=80' }} // Another nature-inspired image from Unsplash
+      source={{ uri: 'https://images.unsplash.com/photo-1548504769-900b70ed122e?fit=crop&w=800&q=80' }} // Another nature-inspired image from Unsplash
       style={styles.background}
     >
       <View style={styles.container}>
@@ -108,7 +108,8 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    padding: 10,
+    padding: 12,
+    paddingBottom: 2,
   },
   iconButton: {
     padding: 10,
