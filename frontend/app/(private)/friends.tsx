@@ -4,25 +4,15 @@ import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default function DashboardPage() {
+export default function FriendsPage() {
   const router = useRouter();
   const navigation = useNavigation();
 
   const [friends, setFriends] = useState([
-    { id: 1, name: 'John Doe', score: 150 },
-    { id: 2, name: 'Jane Smith', score: 200 },
-    { id: 3, name: 'Robert Johnson', score: 120 },
-    { id: 4, name: 'Emily Davis', score: 180 },
-    { id: 5, name: 'Usain Bolt', score: 300 },
-    { id: 6, name: 'Lionel Messi', score: 250 },
-    { id: 7, name: 'Serena Williams', score: 220 },
-    { id: 8, name: 'LeBron James', score: 170 },
-    { id: 9, name: 'Trent Boult', score: 121 },
-    { id: 10, name: 'CR7', score: 240 },
-    { id: 11, name: 'Novak Djokovic', score: 320 },
-    { id: 12, name: 'MJ', score: 340 },
-    { id: 13, name: 'Venus Williams', score: 120 },
-    { id: 14, name: 'Virat Kohli', score: 370 },
+    { id: 1, name: 'John Doe' },
+    { id: 2, name: 'Jane Smith' },
+    { id: 3, name: 'Robert Johnson' },
+    { id: 4, name: 'Emily Davis' },
   ]);
 
   const [showRequests, setShowRequests] = useState(false);
@@ -37,7 +27,7 @@ export default function DashboardPage() {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: true,
-      headerTitle: 'My Dashboard',
+      headerTitle: 'Friends',
       headerTransparent: true,
       headerStyle: {
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
@@ -48,17 +38,18 @@ export default function DashboardPage() {
         fontSize: 24,
       },
       headerRight: () => (
-        <View style={styles.headerIcons}>
+        <View style={styles.headerIconWrapper}>
           <TouchableOpacity onPress={() => setShowRequests(!showRequests)} style={styles.headerButton}>
-            <Icon name="bell" size={24} color="#fc8a00" />
+            <Icon name="bell" size={24} color="rgba(255, 172, 28, 0.8)" />
             {friendRequests.length > 0 && (
               <View style={styles.notificationBadge}>
                 <Text style={styles.notificationText}>{friendRequests.length}</Text>
               </View>
             )}
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => router.replace('/')} style={styles.headerButton}>
-            <Icon name="sign-out" size={24} color="#fc8a00" />
+
+          <TouchableOpacity onPress={() => router.push('/add-friend')} style={styles.headerButton}>
+            <Icon name="plus" size={24} color="rgba(255, 172, 28, 0.8)" />
           </TouchableOpacity>
         </View>
       ),
@@ -79,29 +70,27 @@ export default function DashboardPage() {
     );
   };
 
-  const renderLeaderboardCard = ({ item, index }) => (
-    <View style={styles.leaderboardCard}>
-      <Text style={styles.leaderboardRank}>{index + 1}</Text>
-      <Text style={styles.leaderboardName}>{item.name}</Text>
-      <Text style={styles.leaderboardScore}>{item.score} pts</Text>
-    </View>
-  );
-
   return (
     <View style={styles.container}>
-      <View style={styles.overlay}>
-        <Text style={styles.welcomeText}>Welcome to your Dashboard!</Text>
-        
-        <Text style={styles.leaderboardTitle}>Leaderboard</Text>
+      {friends.length === 0 ? (
+        <Text style={styles.noFriendsText}>No Friends Yet</Text>
+      ) : (
         <FlatList
-          data={friends.sort((a, b) => b.score - a.score)}
-          renderItem={renderLeaderboardCard}
+          data={friends}
+          renderItem={({ item }) => (
+            <View style={styles.cardContainer}>
+              <View style={styles.card}>
+                <Text style={styles.friendName}>{item.name}</Text>
+              </View>
+            </View>
+          )}
           keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.leaderboardList}
+          numColumns={2}
+          contentContainerStyle={styles.friendList}
         />
-      </View>
+      )}
 
-      {/* Friend Requests Dropdown */}
+      {/* Dropdown for Friend Requests */}
       {showRequests && (
         <View style={styles.dropdown}>
           <Text style={styles.dropdownHeader}>Friend Requests</Text>
@@ -124,6 +113,7 @@ export default function DashboardPage() {
               </View>
             </View>
           ))}
+          
           {friendRequests.length > 4 && (
             <TouchableOpacity onPress={() => router.push('/friend-requests')}>
               <Text style={styles.showMoreLink}>Show More</Text>
@@ -140,28 +130,49 @@ const styles = StyleSheet.create({
     backgroundColor: '#fefefe',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingTop: 110,
-    paddingBottom: 100,
+    paddingVertical: 100,
   },
-  overlay: {
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  noFriendsText: {
+    fontSize: 20,
     color: '#000',
-    textAlign: 'center',
     marginBottom: 20,
   },
-  headerButton: {
-    marginRight: 15,
-  },
-  headerIcons: {
-    flexDirection: 'row',
+  cardContainer: {
+    flex: 1,
     alignItems: 'center',
+    margin: 10,
+    paddingHorizontal: 70,
+  },
+  card: {
+    backgroundColor: '#fff',
+    width: 150,
+    height: 150,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  friendName: {
+    color: '#000',
+    fontWeight: 'bold',
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  friendList: {
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  headerIconWrapper: {
+    flexDirection: 'row', // Set flexDirection to 'row' for horizontal alignment
+    alignItems: 'center',
+  },
+  headerButton: {
+    marginRight: 15, // Adjust margin between the icons
   },
   notificationBadge: {
     position: 'absolute',
@@ -181,7 +192,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    top: 100, 
+    top: 100,
     right: 10,
     backgroundColor: '#fff',
     padding: 10,
@@ -191,7 +202,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
-    width: 250,
+    width: 200,
     zIndex: 1000,
   },
   dropdownHeader: {
@@ -202,9 +213,9 @@ const styles = StyleSheet.create({
   },
   requestContainer: {
     marginBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    paddingBottom: 10,
+    borderBottomWidth: 1,  // Add a light border at the bottom
+    borderBottomColor: '#ccc',  // Light gray color for the border
+    paddingBottom: 10,   // Add padding to prevent content overlap
   },
   dropdownText: {
     color: '#000',
@@ -214,7 +225,6 @@ const styles = StyleSheet.create({
   requestButtons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 5,
   },
   acceptButton: {
     backgroundColor: 'green',
@@ -231,57 +241,24 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 14,
   },
+  showMoreButton: {
+    marginTop: 10,
+    padding: 5,
+    backgroundColor: '#e9902c',
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  showMoreText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
   showMoreLink: {
-    color: '#e9902c',
+    color: '#e9902c', // Orange color for the link
     fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop: 10,
+    marginTop: 5,
+    marginBottom: 5,
     textDecorationLine: 'underline',
-  },
-  leaderboardTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#fc8a00',
-  },
-  leaderboardCard: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 10,
-    marginVertical: 5,
-    width: '100%', // Adjust width
-    borderRadius: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 4,
-    alignSelf: 'center', // Center the card
-  },
-  leaderboardRank: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#000',
-    width: 30,
-    textAlign: 'center',
-  },
-  leaderboardName: {
-    fontSize: 16,
-    color: '#333',
-    flex: 1,
-    textAlign: 'left',
-    marginLeft: 10,
-  },
-  leaderboardScore: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#fc8a00',
-  },
-  leaderboardList: {
-    width: '100%', // Set this to 100%
-    alignItems: 'center', // Center content horizontally
-  },
-});
+},});
