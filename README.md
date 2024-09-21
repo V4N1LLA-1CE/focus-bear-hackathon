@@ -1,7 +1,38 @@
-# focus-bear-hackathon
-Repository for focus-bear hackathon challenge
+# Focus-Bear Hackathon Challenge
 
-## Team - Red Bull Coding
+**Date:** 21st September 2024
+
+## Team: Red Bull Coding
+
 ### Members:
-- Paarth Sharma (Frontend)
-- Austin Sofaer (Backend)
+
+- **Backend Developer:** [Austin](https://github.com/V4N1LLA-1CE)
+- **Frontend Developer:** [Paarth](https://github.com/PaarthSh4rma)
+
+## Project Overview
+
+Full-stack mobile application built for a hackathon that is hosted by Focus-Bear.
+
+## Tech Stack
+
+#### Frontend
+
+- **Framework:** React Native
+- **Features:**
+  - User-friendly mobile interface
+  - Responsive design for both iOS and Android
+
+#### Backend
+
+- **Framework:** NestJS
+- **Database:** PostgreSQL
+- **ORM:** Prisma
+
+## Features
+
+- User authentication and authorization with JWT
+- Friends system with requests and notifications
+
+## Getting Started
+
+Demo coming soon!
