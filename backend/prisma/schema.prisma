@@ -25,6 +25,9 @@ model User {
   // Define separate relations for sent and received friendships
   friendshipsSent     Friendship[] @relation("FriendshipsSent")
   friendshipsReceived Friendship[] @relation("FriendshipsReceived")
+
+  // Add relation for daily stats
+  dailyStats DailyStats[]
 }
 
 model Friendship {
@@ -40,6 +43,19 @@ model Friendship {
 
   // This field represents all friendships where the user is the recipient (i.e., the user has received the friendship request from someone else)
   user2 User @relation("FriendshipsReceived", fields: [user2Id], references: [id])
+}
+
+model DailyStats {
+  id                       Int      @id @default(autoincrement())
+  userId                   Int
+  date                     DateTime @unique
+  morningRoutineCompletion Float
+  eveningRoutineCompletion Float
+  minutesInFocusSessions   Int
+  User                     User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
