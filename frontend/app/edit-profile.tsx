@@ -1,11 +1,19 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useLayoutEffect, useState, useEffect } from 'react';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LOCALHOST } from "./constants";
 
 export default function EditProfilePage() {
   const router = useRouter();
   const navigation = useNavigation();
+  const [userData, setUserData] = useState({
+    name: '',
+    username: '',
+    email: '',
+    role: '',
+  });
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -20,23 +28,100 @@ export default function EditProfilePage() {
       },
     });
   }, [navigation]);
-  
-  // Sample state to hold form data
-  const [userData, setUserData] = useState({
-    name: 'John Doe',
-    username: 'johndoe123',
-    email: 'john.doe@example.com',
-    role: 'User',
-  });
+
+  useEffect(() => {
+    // Fetch user data and populate the edit form
+    const fetchUserData = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+
+        if (!token) {
+          throw new Error("No access token found");
+        }
+
+        const profileResponse = await fetch(
+          `http://${LOCALHOST}:3000/api/v1/auth/profile`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!profileResponse.ok) {
+          throw new Error("Failed to fetch profile data");
+        }
+
+        const profileData = await profileResponse.json();
+        const currentUserId = profileData.sub;
+
+        const response = await fetch(
+          `http://${LOCALHOST}:3000/api/v1/users/${currentUserId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch user data");
+        }
+
+        const user = await response.json();
+
+        setUserData({
+          name: user.name,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+        });
+      } catch (error) {
+        Alert.alert("Error occurred", error.message);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleInputChange = (field, value) => {
     setUserData({ ...userData, [field]: value });
   };
 
-  const handleSave = () => {
-    // Here you would save the updated data
-    console.log('Profile updated:', userData);
-    router.back(); // Navigate back to the profile page
+  const handleSave = async () => {
+    try {
+      const token = await AsyncStorage.getItem("authToken");
+
+      if (!token) {
+        throw new Error("No access token found");
+      }
+
+      const response = await fetch(
+        `http://${LOCALHOST}:3000/api/v1/users/update`, // Replace with your actual update endpoint
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(userData),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to update profile');
+      }
+
+      const updatedUser = await response.json();
+      Alert.alert("Success", "Profile updated successfully!");
+      setUserData(updatedUser);
+
+      router.back(); // Navigate back to the profile page
+    } catch (error) {
+      Alert.alert("Error", error.message);
+    }
   };
 
   return (
